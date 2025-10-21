@@ -47,6 +47,8 @@ markupsafe==3.0.3
     # via jinja2
     # via werkzeug
     # via wtforms
+slugify==0.0.1
+    # via segundoparcialpw
 sqlalchemy==2.0.44
     # via flask-sqlalchemy
 typing-extensions==4.15.0
