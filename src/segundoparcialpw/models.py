@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from flask import url_for
-from runpy import db
+from extensions import db
 
 
 
@@ -14,12 +14,12 @@ receta_ingrediente = Table(
     'receta_ingrediente',
     db.metadata,
     Column('receta_id', Integer, ForeignKey('recetas.id', ondelete='CASCADE'), primary_key=True),
-    Column('ingrediente_id', Integer, ForeignKey('ingredientes.id', ondelete='CASCADE'), primary_key=True)
+    Column('ingrediente_id', Integer, ForeignKey('Ingredientes.id', ondelete='CASCADE'), primary_key=True)
 )
 
 class User(db.Model, UserMixin):
     
-    __tablename__ = 'Users'
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
@@ -44,6 +44,10 @@ class User(db.Model, UserMixin):
             db.session.add(self)
         db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     @staticmethod
     def get_by_id(id):
         return User.query.get(id)
@@ -57,19 +61,18 @@ class Receta(db.Model, UserMixin):
     __tablename__ = 'recetas'
     
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.column(db.string(80), ForeignKey('User.id', ondelete='CASCADE'), nullable=False)
-    name = db.column(db.String(100), nullable=False)
-    categoria = db.column(db.string(80), ForeignKey('Categoria.id'))
-    Ingredientes = db.column(db.string(250), ForeignKey('Ingredientes.id'))
-    preparacion = db.column(db.text(250), ForeignKey('Preparacion.id'), nullable=False)
-    slug = db.column(db.string(150), unique=True, nullable=False)
-    descripcion = db.column(db.text(255), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    categoria_id = db.Column(db.Integer, ForeignKey('categorias.id'))
+    preparacion_id = db.Column(db.Integer, ForeignKey('Preparaciones.id'), nullable=False)
+    slug = db.Column(db.String(150), unique=True, nullable=False)
+    descripcion = db.Column(db.Text, nullable=False)
 
 
-    usuario = relationship('Usuario', back_populates='recetas')
+    usuario = relationship('User', back_populates='recetas')
     categoria = relationship('Categoria', back_populates='recetas')
     preparacion = relationship('Preparacion', back_populates='recetas')
-    ingredientes = relationship('Ingrediente', secondary=receta_ingrediente, back_populates='recetas')
+    ingredientes = relationship('Ingredientes', secondary=receta_ingrediente, back_populates='recetas')
 
 
 
@@ -87,6 +90,10 @@ class Receta(db.Model, UserMixin):
             except IntegrityError:
                 count += 1
                 self.slug = f'{slugify(self.name)}-{count}'
+
+    def drop(self):
+        db.session.delete(self)
+        db.session.commit()
 
     def public_url(self):
         return url_for('show_recetas', slug=self.slug)
@@ -106,10 +113,10 @@ class Receta(db.Model, UserMixin):
 class Categoria(db.Model):
     __tablename__ = 'categorias'
 
-    id = db.column(db.Integer, primary_key=True)
-    nombre = db.column(db.String(100), nullable=False)
-    tipo= db.column(db.String(100), nullable=False)
-    descripcion = db.column(db.String(255), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    tipo = db.Column(db.String(100), nullable=False)
+    descripcion = db.Column(db.String(255), nullable=False)
 
     recetas = relationship('Receta', back_populates='categoria', cascade='all, delete')
 
@@ -119,12 +126,16 @@ class Categoria(db.Model):
             db.session.add(self)
         db.session.commit()
 
+    def drop(self):
+        db.session.delete(self)
+        db.session.commit()
+
 class Ingredientes(db.Model):
     __tablename__ = 'Ingredientes'
     
-    id = db.column(db.Integer, primary_key=True)
-    nombre = db.column(db.String(100), nullable=False)
-    cantidad = db.column(db.Integer, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    cantidad = db.Column(db.Integer, nullable=False)
 
 
     recetas = relationship('Receta', secondary=receta_ingrediente, back_populates='ingredientes')
@@ -133,14 +144,18 @@ class Ingredientes(db.Model):
         if not self.id:
             db.session.add(self)
         db.session.commit()
+    
+    def drop(self):
+        db.session.delete(self)
+        db.sessiion.commit()
+
 
 class Preparacion(db.Model):
     __tablename__ = 'Preparaciones'
 
-    id = db.column(db.Integer, primary_key=True)
-    tiempo = db.column(db.Integer, nullable=False)
-    ingredientes = db.column(db.String(100), primary_key=True)
-    descripcion = db.column(db.String(100), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    tiempo = db.Column(db.Integer, nullable=False)
+    descripcion = db.Column(db.Text, nullable=False)
 
 
     recetas = relationship('Receta', back_populates='preparacion')
@@ -149,3 +164,7 @@ class Preparacion(db.Model):
         if not self.id:
             db.session.add(self)
         db.session.commit()
+
+    def drop(self):
+        db.session.delete(self)
+        db.sessiion.commit()

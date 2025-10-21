@@ -1,6 +1,76 @@
 {% extends "base.html" %}
-{% block title %}{{ slug_title }}{% endblock %}
+{% block title %}{{ Receta.name }}{% endblock %}
 {% block content %}
-    <h1>{{ Reseta.nombre }}</h1>
-    {{ Reseta.categoria }}
-{% endblock %} 
+    <div class="receta-detalle">
+        <h1>{{ Receta.name }}</h1>
+
+        {% if Receta.categoria %}
+        <div class="categoria-info">
+            <h2>Categoría</h2>
+            <p>{{ Receta.categoria.nombre }}</p>
+            <p>{{ Receta.categoria.descripcion }}</p>
+        </div>
+        {% endif %}
+
+        <div class="descripcion-general">
+            <h2>Descripción</h2>
+            <p>{{ Receta.descripcion }}</p>
+        </div>
+
+        {% if current_user.is_authenticated and current_user.id == Receta.user_id %}
+            <div class="ingredientes">
+                <h2>Ingredientes</h2>
+                {% if Receta.ingredientes %}
+                <ul>
+                    {% for ingrediente in Receta.ingredientes %}
+                    <li>{{ ingrediente.nombre }} - {{ ingrediente.cantidad }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No hay ingredientes registrados para esta receta.</p>
+                {% endif %}
+            </div>
+
+            <div class="preparacion">
+                <h2>Preparación</h2>
+                {% if Receta.preparacion %}
+                    <p>Tiempo de preparación: {{ Receta.preparacion.tiempo }} minutos</p>
+                    <h3>Pasos a seguir:</h3>
+                    <ol>
+                    {% for paso in Receta.preparacion.descripcion.split('.') %}
+                        {% if paso.strip() %}
+                            <li>{{ paso.strip() }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ol>
+                {% else %}
+                    <p>No hay instrucciones de preparación registradas.</p>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="ingredientes">
+                <h2>Ingredientes</h2>
+                <p>Los ingredientes solo están disponibles para el autor de la receta.</p>
+            </div>
+
+            <div class="preparacion">
+                <h2>Preparación</h2>
+                <p>Los pasos de preparación solo están disponibles para el autor de la receta.</p>
+            </div>
+        {% endif %}
+
+        <div class="autor">
+            <h2>Autor</h2>
+            {% if Receta.usuario %}
+            <p>{{ Receta.usuario.name }}</p>
+            {% else %}
+            <p>Autor desconocido</p>
+            {% endif %}
+        </div>
+
+        {% if current_user.is_authenticated and current_user.id == Receta.user_id %}
+        <a href="{{ url_for('delete_receta', slug=Receta.slug) }}">Eliminar receta completa</a>
+        {% endif %}
+        <a href="{{ url_for('index') }}">Volver a la lista de recetas</a>
+    </div>
+{% endblock %}

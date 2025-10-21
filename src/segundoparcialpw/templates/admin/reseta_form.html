@@ -1,103 +1,134 @@
 {% extends "base.html" %}
-{% block title %}Registro de reseta{% endblock %}
+{% block title %}Registro de Receta{% endblock %}
 {% block content %}
     {% if error %}
         <p style="color: red;"><strong>Error:</strong> {{ error }}
     {% endif %}
 
-    <h2>Administración rápida</h2>
-    <div style="display:flex;gap:2rem;align-items:flex-start;">
-        <section>
+    <h2>Administración de Recetas</h2>
+    <div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;padding:1rem;">
+        <section class="form-section">
             <h3>Crear Categoría</h3>
             <form action="" method="post" novalidate>
                 {{ cat_form.hidden_tag() }}
-                <div>
+                <div class="form-group">
                     {{ cat_form.nombre.label }}<br>
-                    {{ cat_form.nombre(size=40) }}
+                    {{ cat_form.nombre(size=40, class="form-control") }}
                     {% for error in cat_form.nombre.errors %}
-                    <span style="color: red;">{{ error }}</span>
+                    <span class="error-message">{{ error }}</span>
                     {% endfor %}
                 </div>
-                <div>
+                <div class="form-group">
                     {{ cat_form.tipo.label }}<br>
-                    {{ cat_form.tipo(size=40) }}
+                    {{ cat_form.tipo(size=40, class="form-control") }}
                     {% for error in cat_form.tipo.errors %}
-                    <span style="color: red;">{{ error }}</span>
+                    <span class="error-message">{{ error }}</span>
                     {% endfor %}
                 </div>
-                <div>
+                <div class="form-group">
                     {{ cat_form.descripcion.label }}<br>
-                    {{ cat_form.descripcion(rows=4, cols=40) }}
+                    {{ cat_form.descripcion(rows=3, cols=40, class="form-control") }}
                     {% for error in cat_form.descripcion.errors %}
-                    <span style="color: red;">{{ error }}</span>
+                    <span class="error-message">{{ error }}</span>
                     {% endfor %}
                 </div>
-                <div>
-                    <button name="cat-submit" type="submit">Crear Categoría</button>
+                <div class="form-group">
+                    <button name="cat-submit" type="submit" class="btn btn-primary">Crear Categoría</button>
                 </div>
             </form>
         </section>
 
-        <section>
+        <section class="form-section">
             <h3>Crear Ingrediente</h3>
             <form action="" method="post" novalidate>
                 {{ ing_form.hidden_tag() }}
-                <div>
+                <div class="form-group">
                     {{ ing_form.nombre.label }}<br>
-                    {{ ing_form.nombre(size=30) }}
+                    {{ ing_form.nombre(size=30, class="form-control") }}
                     {% for error in ing_form.nombre.errors %}
-                    <span style="color: red;">{{ error }}</span>
+                    <span class="error-message">{{ error }}</span>
                     {% endfor %}
                 </div>
-                <div>
-                    <button name="ing-submit" type="submit">Crear Ingrediente</button>
+                <div class="form-group">
+                    {{ ing_form.cantidad.label }}<br>
+                    {{ ing_form.cantidad(size=10, class="form-control") }}
+                    {% for error in ing_form.cantidad.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <button name="ing-submit" type="submit" class="btn btn-primary">Crear Ingrediente</button>
                 </div>
             </form>
         </section>
 
-        <section style="min-width:420px;">
+        <section class="form-section">
+            <h3>Agregar Preparación</h3>
+            <form action="" method="post" novalidate>
+                {{ preparacion_form.hidden_tag() }}
+                {{ preparacion_form.csrf_token }}
+                <div class="form-group">
+                    {{ preparacion_form.tiempo.label }}<br>
+                    {{ preparacion_form.tiempo(size=10, class="form-control") }}
+                    {% for error in preparacion_form.tiempo.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ preparacion_form.descripcion.label }}<br>
+                    {{ preparacion_form.descripcion(rows=3, cols=40, class="form-control") }}
+                    {% for error in preparacion_form.descripcion.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <button name="prep-submit" type="submit" class="btn btn-primary">Agregar Preparación</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="form-section" style="min-width:420px;">
             <h3>Crear Receta</h3>
             <form action="" method="post" novalidate>
                 {{ rec_form.hidden_tag() }}
-                <div>
+                <div class="form-group">
                     {{ rec_form.nombre.label }}<br>
-                    {{ rec_form.nombre(size=40) }}
+                    {{ rec_form.nombre(size=40, class="form-control") }}
                     {% for error in rec_form.nombre.errors %}
-                    <span style="color: red;">{{ error }}</span>
+                    <span class="error-message">{{ error }}</span>
                     {% endfor %}
                 </div>
-                <div>
+                <div class="form-group">
                     {{ rec_form.categoria.label }}<br>
-                    {{ rec_form.categoria() }}
+                    {{ rec_form.categoria(class="form-control") }}
                     {% for error in rec_form.categoria.errors %}
-                    <span style="color: red;">{{ error }}</span>
+                    <span class="error-message">{{ error }}</span>
                     {% endfor %}
                 </div>
-                <div>
-                    {{ rec_form.tiempo.label }}<br>
-                    {{ rec_form.tiempo() }}
-                    {% for error in rec_form.tiempo.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </div>
-                <div>
+                <div class="form-group">
                     {{ rec_form.ingredientes.label }}<br>
-                    {{ rec_form.ingredientes(size=6, multiple=True) }}
-                    <small>Mantén presionada la tecla Ctrl para seleccionar varios ingredientes</small>
+                    {{ rec_form.ingredientes(size=6, multiple=True, class="form-control") }}
+                    <small class="form-text text-muted">Mantén presionada la tecla Ctrl para seleccionar varios ingredientes</small>
                     {% for error in rec_form.ingredientes.errors %}
-                    <span style="color: red;">{{ error }}</span>
+                    <span class="error-message">{{ error }}</span>
                     {% endfor %}
                 </div>
-                <div>
-                    {{ rec_form.pasos.label }}<br>
-                    {{ rec_form.pasos(rows=6, cols=50) }}
-                    <small>Un paso por línea</small>
-                    {% for error in rec_form.pasos.errors %}
-                    <span style="color: red;">{{ error }}</span>
+                <div class="form-group">
+                    {{ rec_form.preparacion.label }}<br>
+                    {{ rec_form.preparacion(class="form-control") }}
+                    {% for error in rec_form.preparacion.errors %}
+                    <span class="error-message">{{ error }}</span>
                     {% endfor %}
                 </div>
-                <div>
-                    <button name="rec-submit" type="submit">Crear Receta</button>
+                <div class="form-group">
+                    {{ rec_form.descripcion.label }}<br>
+                    {{ rec_form.descripcion(rows=4, cols=50, class="form-control") }}
+                    {% for error in rec_form.descripcion.errors %}
+                    <span class="error-message">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <button name="rec-submit" type="submit" class="btn btn-primary">Crear Receta</button>
                 </div>
             </form>
         </section>

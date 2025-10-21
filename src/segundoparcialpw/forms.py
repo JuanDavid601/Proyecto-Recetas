@@ -33,20 +33,23 @@ class CategoriaForm(FlaskForm):
 
 class IngredienteForm(FlaskForm):
     nombre = StringField('Nombre', validators=[DataRequired(), Length(max=120)])
+    cantidad = IntegerField('Cantidad', validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField('Guardar Ingrediente')
 
 
 class PreparacionForm(FlaskForm):
-    orden = IntegerField('Orden', validators=[DataRequired(), NumberRange(min=1)])
+    # Según models.py Preparacion tiene: tiempo, ingredientes (string) y descripcion
+    tiempo = IntegerField('Tiempo (min)', validators=[DataRequired(), NumberRange(min=0)])
     descripcion = TextAreaField('Descripción', validators=[DataRequired()])
-    tiempo = IntegerField('Tiempo (min)', validators=[Optional(), NumberRange(min=0)])
-    submit = SubmitField('Guardar Paso')
+    submit = SubmitField('Guardar Preparación')
 
 
 class RecetaForm(FlaskForm):
-    nombre = StringField('Nombre', validators=[DataRequired(), Length(max=120)])
-    categoria = SelectField('Categoría', coerce=int, validators=[DataRequired()])
-    tiempo = IntegerField('Tiempo total (min)', validators=[DataRequired(), NumberRange(min=0)])
+    # En models.py Receta tiene: name, categoria_id, preparacion_id, slug, descripcion
+    nombre = StringField('Nombre', validators=[DataRequired(), Length(max=100)])
+    categoria = SelectField('Categoría', coerce=int, validators=[Optional()])
+    preparacion = SelectField('Preparación', coerce=int, validators=[DataRequired()])
+    descripcion = TextAreaField('Descripción', validators=[DataRequired()])
+    # Mantenemos selección múltiple de ingredientes (relación many-to-many)
     ingredientes = SelectMultipleField('Ingredientes', coerce=int, validators=[Optional()])
-    pasos = TextAreaField('Pasos (un paso por línea)', validators=[Optional()])
     submit = SubmitField('Guardar Receta')

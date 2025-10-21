@@ -1,16 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Inicio{% endblock %}
 {% block content %}
-    <h1>Las Mejores Resetas</h1>
-    <ul>
-    {% for Receta in Recetas %}
-        <li>ID: {{ Receta.id }} [{{ Receta.nombre }}] {{ Receta.tiempo }} min</li>
-        <li>{{ Receta.categoria.nombre }}</li>
-        <li>{{ Receta.autor.nombre }}</li>
-        {% for ingrediente in Receta.ingredientes %}
-            <li>{{ ingrediente.nombre }}</li>
+    <h1>Las Mejores Recetas</h1>
+    <div class="recetas-grid">
+        {% for receta in Recetas %}
+            <div class="receta-card">
+                <h2>{{ receta.name }}</h2>
+                {% if receta.categoria %}
+                    <p class="categoria">Categoría: {{ receta.categoria.nombre }}</p>
+                {% endif %}
+                <p class="descripcion">{{ receta.descripcion }}</p>
+                <a href="{{ url_for('show_reseta', slug=receta.slug) }}" class="ver-mas">Ver receta completa</a>
+            </div>
+        {% else %}
+            <p>No hay recetas disponibles.</p>
         {% endfor %}
-        <li><a href="{{ Receta.public_url() }}">VER</a></li>
-    {% endfor %}
-    </ul>
+    </div>
 {% endblock %}
