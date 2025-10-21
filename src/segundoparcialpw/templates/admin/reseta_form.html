@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Registro de reseta{% endblock %}
+{% block content %}
+    {% if error %}
+        <p style="color: red;"><strong>Error:</strong> {{ error }}
+    {% endif %}
+
+    <h2>Administración rápida</h2>
+    <div style="display:flex;gap:2rem;align-items:flex-start;">
+        <section>
+            <h3>Crear Categoría</h3>
+            <form action="" method="post" novalidate>
+                {{ cat_form.hidden_tag() }}
+                <div>
+                    {{ cat_form.nombre.label }}<br>
+                    {{ cat_form.nombre(size=40) }}
+                    {% for error in cat_form.nombre.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ cat_form.tipo.label }}<br>
+                    {{ cat_form.tipo(size=40) }}
+                    {% for error in cat_form.tipo.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ cat_form.descripcion.label }}<br>
+                    {{ cat_form.descripcion(rows=4, cols=40) }}
+                    {% for error in cat_form.descripcion.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div>
+                    <button name="cat-submit" type="submit">Crear Categoría</button>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h3>Crear Ingrediente</h3>
+            <form action="" method="post" novalidate>
+                {{ ing_form.hidden_tag() }}
+                <div>
+                    {{ ing_form.nombre.label }}<br>
+                    {{ ing_form.nombre(size=30) }}
+                    {% for error in ing_form.nombre.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div>
+                    <button name="ing-submit" type="submit">Crear Ingrediente</button>
+                </div>
+            </form>
+        </section>
+
+        <section style="min-width:420px;">
+            <h3>Crear Receta</h3>
+            <form action="" method="post" novalidate>
+                {{ rec_form.hidden_tag() }}
+                <div>
+                    {{ rec_form.nombre.label }}<br>
+                    {{ rec_form.nombre(size=40) }}
+                    {% for error in rec_form.nombre.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ rec_form.categoria.label }}<br>
+                    {{ rec_form.categoria() }}
+                    {% for error in rec_form.categoria.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ rec_form.tiempo.label }}<br>
+                    {{ rec_form.tiempo() }}
+                    {% for error in rec_form.tiempo.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ rec_form.ingredientes.label }}<br>
+                    {{ rec_form.ingredientes(size=6, multiple=True) }}
+                    <small>Mantén presionada la tecla Ctrl para seleccionar varios ingredientes</small>
+                    {% for error in rec_form.ingredientes.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ rec_form.pasos.label }}<br>
+                    {{ rec_form.pasos(rows=6, cols=50) }}
+                    <small>Un paso por línea</small>
+                    {% for error in rec_form.pasos.errors %}
+                    <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </div>
+                <div>
+                    <button name="rec-submit" type="submit">Crear Receta</button>
+                </div>
+            </form>
+        </section>
+    </div>
+{% endblock %}

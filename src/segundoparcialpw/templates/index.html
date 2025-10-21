@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 {% block title %}Inicio{% endblock %}
 {% block content %}
-    <h1>Hola Mundo</h1>
+    <h1>Las Mejores Resetas</h1>
+    <ul>
+    {% for Receta in Recetas %}
+        <li>ID: {{ Receta.id }} [{{ Receta.nombre }}] {{ Receta.tiempo }} min</li>
+        <li>{{ Receta.categoria.nombre }}</li>
+        <li>{{ Receta.autor.nombre }}</li>
+        {% for ingrediente in Receta.ingredientes %}
+            <li>{{ ingrediente.nombre }}</li>
+        {% endfor %}
+        <li><a href="{{ Receta.public_url() }}">VER</a></li>
+    {% endfor %}
+    </ul>
 {% endblock %}

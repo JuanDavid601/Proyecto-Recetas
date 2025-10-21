@@ -2,16 +2,26 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&display=swap');
+    </style>
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='base_style.css') }}">
 </head>
 <body>
 <div>
     <ul class="user-info">
-        <li>Bienvenido</li>
-        <li><a href="">Home</a></li>
-        <li><a href="">Login</a></li>
-        <li><a href="">Registrar</a></li>
-        <li><a href="">Logout</a></li>
+        <li class="lavishly-yours-regular"><a href="{{ url_for('index') }}">Home</a></li>
+        {% if current_user.is_anonymous %}
+            <li class="lavishly-yours-regular"><a href="{{ url_for('login') }}">Login</a></li>
+            <li> | </li>
+            <li class="lavishly-yours-regular"><a href="{{ url_for('show_signup_form') }}">Registrar</a></li>
+        {% else %}
+            <li class="lavishly-yours-regular">Bienvenido {{ current_user.name }}</li>
+            <li> | </li>
+            <li class="lavishly-yours-regular"><a href="{{ url_for('logout') }}">Logout</a></li>
+            <li class="lavishly-yours-regular"><a href="{{ url_for('reseta_form') }}">Nueva Reseta</a></li>
+        {% endif %}
     </ul>
 </div>
 {% block content %}{% endblock %}
