@@ -2,28 +2,30 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Lavishly+Yours&display=swap');
-    </style>
-    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Las mejores recetas caseras">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>{% block title %}{% endblock %} | Recetas</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base_style.css') }}">
 </head>
 <body>
-<div>
+<nav class="nav-container">
     <ul class="user-info">
-        <li class="lavishly-yours-regular"><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('index') }}">Inicio</a></li>
         {% if current_user.is_anonymous %}
-            <li class="lavishly-yours-regular"><a href="{{ url_for('login') }}">Login</a></li>
-            <li> | </li>
-            <li class="lavishly-yours-regular"><a href="{{ url_for('show_signup_form') }}">Registrar</a></li>
+            <li><a href="{{ url_for('login') }}">Iniciar Sesión</a></li>
+            <li><a href="{{ url_for('show_signup_form') }}">Registrarse</a></li>
         {% else %}
-            <li class="lavishly-yours-regular">Bienvenido {{ current_user.name }}</li>
-            <li> | </li>
-            <li class="lavishly-yours-regular"><a href="{{ url_for('logout') }}">Logout</a></li>
-            <li class="lavishly-yours-regular"><a href="{{ url_for('reseta_form') }}">Nueva Reseta</a></li>
+            <li>Bienvenido, {{ current_user.name }}</li>
+            <li><a href="{{ url_for('reseta_form') }}">Nueva Receta</a></li>
+            <li><a href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
         {% endif %}
     </ul>
-</div>
-{% block content %}{% endblock %}
+</nav>
+<main class="main-container">
+    {% block content %}{% endblock %}
+</main>
 </body>
 </html>
